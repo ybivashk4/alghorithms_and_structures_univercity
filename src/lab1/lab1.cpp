@@ -1,112 +1,126 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
+#define interval 10
 using namespace std;
-
-namespace up_sort_gen{
-	void gen_double(double * arr, int n) {
-		int i = 0;
-		double j = 0.1;
-		for (i=0;i<n;i++) {
-			arr[i] = j;
-			j += 0.2;
-		}
-	}
-	void gen_int(int * arr, int n) {
-		int i = 0;
-		for (i=0;i<n;i++) {
-			arr[i] = i;
-		}
-	}
-};
-
-namespace down_sort_gen{
-	void gen_double(double * arr, int n) {
-		int i = 0;
-		double j = 0.1 + 0.2 * n;
-		for (i=0;i<n;i++) {
-			arr[i] = j;
-			j -= 0.2;
-		}
-	}
-	void gen_int(int * arr, int n) {
-		int i = 0;
-		for (i=0;i<n;i++) {
-			arr[i] = n - i;
-		}
-	}
-};
 
 class double_array {
 	public:
 		int size;
-		double * double_arr;
+		double * arr;
 		void output() {
 			for (int i=0;i<size;i++) 
-				printf("%lg ", double_arr[i]);
+				printf("%lg ", arr[i]);
 			printf("\n");
 		}
 		void gen_rand() {
 			for (int i=0;i<size;i++)
-				double_arr[i] = rand() * (1.0 / (i+1));
+				arr[i] = rand() * (1.0 / (i+1));
+		}
+		void gen_up(int n) {
+			int i = 0;
+			double j = 0.1;
+			for (i=0;i<n;i++) {
+				arr[i] = j;
+				j += 0.2;
+			}
+		}
+		void gen_down(int n) {
+			int i = 0;
+			double j = 0.1 + 0.2 * n;
+			for (i=0;i<n;i++) {
+				arr[i] = j;
+				j -= 0.2;
+			}
 		}
 		double_array(int n) {
-			double_arr = new double[n];
+			arr = new double[n];
 			size = n;
 		}
 		~double_array() {
-			delete double_arr;
+			delete arr;
 		}
 };
 
 class int_array {
-	public:
-		int * int_arr;
+	private:
+		int * arr;
 		int size;
+	public:
 		void output() {
 			for (int i=0;i<size;i++) 
-				printf("%d ", int_arr[i]);
+				printf("%d ", arr[i]);
 			printf("\n");
 		}
-		void gen_rand() {
+		void gen_rand(int min_val, int max_val) {
 			for (int i=0;i<size;i++)
-				int_arr[i] = rand();
+				arr[i] = rand() % max_val + min_val;
+		}
+		void gen_up(int min_val, int max_val, int step) {
+			int val = min_val;
+			int i = 0;
+			for (i=0;i<size;i++) {
+				arr[i] = val;
+				val += step;
+			}
+		}
+		void gen_down(int min_val, int max_val, int step) {
+			int val = max_val;
+			int i = 0;
+			for (i=0;i<size;i++) {
+				arr[i] = val;
+				val -= step;
+			}
+		}
+		// interval = 10
+		void sin_gen(int min_val, int max_val) {
+			int mid, i = 0, n = size, j = 0, k = 0;
+			mid = interval / 2;
+			while (n - interval >= 0) {
+				for (i=0+j;i<mid+j;i++) {
+					arr[i] = size-k;
+					k++;
+				}
+				for (i=mid+j;i<interval+j;i++) {
+					arr[i] = k;
+					k++;
+				}
+				n -= interval;
+				j += interval;
+				k=0;
+			}
+			// не влезло 
+			for (i=size-n;i<size;i++) {
+				arr[i] = 0;
+			}
+		}
+
+		//a1 < a2 > a3 < … > an-1 < an
+		void sawtooth_gen(int n) {
+			int mx = n;
+			int mn = 0;
+			int i=0;
+			for (i=0;i<n;i++) {
+				if (i % 2 == 0) {
+					arr[i] = mn;
+					mn++;
+				}
+				if (i % 2 == 1) {
+					arr[i] = mx;
+					mx--;
+				}
+			}
 		}
 		int_array(int n) {
-			int_arr = new int[n];
+			arr = new int[n];
 			size = n;
 		}
 		~int_array() {
-			delete int_arr;
+			delete arr;
 		}
 };
-// ������� �� ��������� 
-void sin_gen(int * arr, int n) {
-	int mid = n / 2;
-	int i=0;
-	for (i=0;i<mid;i++) {
-		arr[i] = n-i;
-	}
-	for (i=mid;i<n;i++) {
-		arr[i] = i;
-	}
-}
 
-void sawtooth_gen(int * arr, int n) {
-	int mx = n;
-	int mn = 0;
-	int i=0;
-	for (i=0;i<n;i++) {
-		if (i % 2 == 0) {
-			arr[i] = mn;
-			mn++;
-		}
-		if (i % 2 == 1) {
-			arr[i] = mx;
-			mx--;
-		}
-	}
-}
+
 
 
 void start_gen(double_array * gen_1, int_array * gen_2, int n) {
@@ -149,3 +163,8 @@ int main(){
 	system("pause");
 	return 0;
 }
+/*
+Квази-упорядоченная последовательность – это последовательность, в которой имеется
+ограниченное количество инверсий (количество элементов, для которых не
+выполняется отношение порядка) и оно много меньше размера последовательности.
+*/
