@@ -1,178 +1,156 @@
 #include <iostream>
 #include <ctime>
 #include <cstdlib>
-#define interval 10
-using namespace std;
+#include "lab1.h"
 
-class double_array {
-	public:
-		int size;
-		double * arr;
-		void output() {
-			for (int i=0;i<size;i++) 
-				printf("%lg ", arr[i]);
-			printf("\n");
-		}
-		void gen_rand() {
-			for (int i=0;i<size;i++)
-				arr[i] = rand() * (1.0 / (i+1));
-		}
-		void gen_up(int n) {
-			int i = 0;
-			double j = 0.1;
-			for (i=0;i<n;i++) {
-				arr[i] = j;
-				j += 0.2;
-			}
-		}
-		void gen_down(int n) {
-			int i = 0;
-			double j = 0.1 + 0.2 * n;
-			for (i=0;i<n;i++) {
-				arr[i] = j;
-				j -= 0.2;
-			}
-		}
-		double_array(int n) {
-			arr = new double[n];
-			size = n;
-		}
-		~double_array() {
-			delete arr;
-		}
-};
+void int_array::output() {
+	for (int i=0;i<size;i++) 
+		printf("%d ", arr[i]);
+	printf("\n");
+}
 
-class int_array {
-	private:
-		int * arr;
-		int size;
-	public:
-		void output() {
-			for (int i=0;i<size;i++) 
-				printf("%d ", arr[i]);
-			printf("\n");
-		}
-		void gen_rand(int min_val, int max_val) {
-			for (int i=0;i<size;i++) {
-				arr[i] = rand() % (max_val-min_val+1) + min_val;
-			}
+void int_array::gen_rand(int min_val, int max_val) {
+	for (int i=0;i<size;i++) {
+		arr[i] = rand() % (max_val-min_val+1) + min_val;
+	}
 
-		}
-		// max_val no control
-		void gen_up(int min_val, int max_val, int step) {
-			int val = min_val;
-			int i = 0;
-			for (i=0;i<size;i++) {
-				arr[i] = val;
-				if (val+step <= max_val)
-					val += step;
-				else 
-					val = max_val;
-			}
-		}
-		void gen_down(int min_val, int max_val, int step) {
-			int val = max_val;
-			int i = 0;
-			for (i=0;i<size;i++) {
-				arr[i] = val;
-				
-				if (val-step >= min_val)
-					val -= step;
-				else 
-					val = min_val;
-			}
-		}
-		// interval = 10
-		void sin_gen(int min_val, int max_val) {
-			int mid, i = 0, n = size, j = 0, val = max_val, step=(max_val-min_val)/interval;
-			mid = interval / 2;
-			while (n - interval >= 0) {
-				for (i=0+j;i<mid+j;i++) {
-					arr[i] = val;
-					if (val-step >= min_val)
-						val -= step;
-					else 
-						val = min_val;
-				}
-				for (i=mid+j;i<interval+j;i++) {
-					arr[i] = val;
-					if (val+step <= max_val)
-						val += step;
-					else 
-						val = max_val;
-				}
-				n -= interval;
-				j += interval;
-				val = max_val;
-			}
-		}
+}
 
-		//a1 < a2 > a3 < … > an-1 < an
-		void sawtooth_gen(int min_val, int max_val) {
-			int i=0, j=0, mn = min_val, mx = max_val, l=0, n=size;
-			while (n - interval >= 0) {
-				for (i=0+j;i<interval+j;i++) {
-					if (i % 2 == l) {
-						arr[i] = mn;
-						mn++;
-					}
-					else {
-						arr[i] = mx;
-						mx--;
-					}
-				}
-				l = (l+1)%2;
-				n -= interval;
-				j += interval;
-				mx = max_val;
-				mn = min_val;
-			}
+// max_val no control
+void int_array::gen_up(int min_val, int max_val, int step) {
+	int val = min_val;
+	int i = 0;
+	for (i=0;i<size;i++) {
+		arr[i] = val;
+		if (val+step <= max_val)
+			val += step;
+		else 
+			val = max_val;
+	}
+}
 
-		}
-		void step_gen(int min_val, int max_val) {
-			int range = max_val - min_val, i=0, j=0, n=size, step = range / (n / interval) / 2, mn=step+min_val, mx = 2*step+min_val;
-			while (n - interval >= 0) {
-				for (i=0+j;i<interval+j;i++) {
-					arr[i] = rand() % (mx-mn+1) + mn;
-				}
-				n -= interval;
-				j += interval;
-				mn += 2 * step;
-				mx += 2 * step;
-			}
-		}
-		void kvazi_gen(int min_val, int max_val) {
-			int i=0, j=0, n=size, val = min_val, step=(max_val-min_val)/interval, temp=0;
-			while (n - interval >= 0) {
-				for (i=0+j;i<interval+j;i++) {
-					arr[i] = val;
-					
-					if (val+step <= max_val)
-						val += step;
-					else 
-						val = max_val;
-				}
-				// 3 инверсии
-				i--;
-				temp = arr[i-2];
-				arr[i-2] = arr[i];
-				arr[i] = temp;
-				n -= interval;
-				j += interval;
+void int_array::gen_down(int min_val, int max_val, int step) {
+	int val = max_val;
+	int i = 0;
+	for (i=0;i<size;i++) {
+		arr[i] = val;
+		
+		if (val-step >= min_val)
+			val -= step;
+		else 
+			val = min_val;
+	}
+}
+
+void int_array::sin_gen(int min_val, int max_val) {
+	int mid, i = 0, n = size, j = 0, val = max_val, step=(max_val-min_val)/interval;
+	mid = interval / 2;
+	while (n - interval >= 0) {
+		for (i=0+j;i<mid+j;i++) {
+			arr[i] = val;
+			if (val-step >= min_val)
+				val -= step;
+			else 
 				val = min_val;
+		}
+		for (i=mid+j;i<interval+j;i++) {
+			arr[i] = val;
+			if (val+step <= max_val)
+				val += step;
+			else 
+				val = max_val;
+		}
+		n -= interval;
+		j += interval;
+		val = max_val;
+	}
+}
+
+//a1 < a2 > a3 < … > an-1 < an
+void int_array::sawtooth_gen(int min_val, int max_val) {
+	int i=0, j=0, mn = min_val, mx = max_val, l=0, n=size;
+	while (n - interval >= 0) {
+		for (i=0+j;i<interval+j;i++) {
+			if (i % 2 == l) {
+				arr[i] = mn;
+				mn++;
+			}
+			else {
+				arr[i] = mx;
+				mx--;
 			}
 		}
-		int_array(int n) {
-			arr = new int[n];
-			for (int i=0;i<n;i++) arr[i] = 0;
-			size = n;
-		}
-		~int_array() {
-			delete arr;
-		}
-};
+		l = (l+1)%2;
+		n -= interval;
+		j += interval;
+		mx = max_val;
+		mn = min_val;
+	}
+}
 
+void int_array::step_gen(int min_val, int max_val) {
+	int range = max_val - min_val, i=0, j=0, n=size, step = range / (n / interval) / 2, mn=step+min_val, mx = 2*step+min_val;
+	while (n - interval >= 0) {
+		for (i=0+j;i<interval+j;i++) {
+			arr[i] = rand() % (mx-mn+1) + mn;
+		}
+		n -= interval;
+		j += interval;
+		mn += 2 * step;
+		mx += 2 * step;
+	}
+}
 
+void int_array::kvazi_gen(int min_val, int max_val) {
+	int i=0, j=0, n=size, val = min_val, step=(max_val-min_val)/interval, temp=0;
+	while (n - interval >= 0) {
+		for (i=0+j;i<interval+j;i++) {
+			arr[i] = val;
+			
+			if (val+step <= max_val)
+				val += step;
+			else 
+				val = max_val;
+		}
+		// 3 инверсии
+		i--;
+		temp = arr[i-2];
+		arr[i-2] = arr[i];
+		arr[i] = temp;
+		n -= interval;
+		j += interval;
+		val = min_val;
+	}
+}
+
+void double_array::gen_down(int n) {
+	int i = 0;
+	double j = 0.1 + 0.2 * n;
+	for (i=0;i<n;i++) {
+		arr[i] = j;
+		j -= 0.2;
+	}
+}
+
+void double_array::gen_up(int n) {
+	int i = 0;
+	double j = 0.1;
+	for (i=0;i<n;i++) {
+		arr[i] = j;
+		j += 0.2;
+	}
+}
+
+void double_array::gen_rand() {
+	for (int i=0;i<size;i++)
+		arr[i] = rand() * (1.0 / (i+1));
+}
+
+void double_array::output() {
+	for (int i=0;i<size;i++) 
+		printf("%lg ", arr[i]);
+	printf("\n");
+}
 
 /*
 void start_gen(double_array * gen_1, int_array * gen_2, int n) {
