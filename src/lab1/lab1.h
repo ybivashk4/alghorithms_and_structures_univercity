@@ -2,13 +2,22 @@
 using namespace std;
 
 class double_array {
-	public:
+	private:
 		int size;
 		double * arr;
+		// enum last_gen = {pseudo_gen=1, sorted_gen=2};
+	public:
 		void output();
-		void gen_rand();
-		void gen_up(int n);
-		void gen_down(int n);
+		void gen_rand(double min_val, double max_val);
+		// max_val no control
+		void gen_up(double min_val, double max_val, double step);
+		void gen_down(double min_val, double max_val, double step);
+
+		// не реализовано 
+		// void sawtooth_gen(double min_val, double max_val);
+		// void step_gen(double min_val, double max_val);
+		// void kvazi_gen(double min_val, double max_val);
+
 		double_array(int n) {
 			arr = new double[n];
 			size = n;

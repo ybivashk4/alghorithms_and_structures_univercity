@@ -2,7 +2,7 @@
 #include <ctime>
 #include <cstdlib>
 #include "lab1.h"
-
+#include <cmath>
 void int_array::output() {
 	for (int i=0;i<size;i++) 
 		printf("%d ", arr[i]);
@@ -123,27 +123,58 @@ void int_array::kvazi_gen(int min_val, int max_val) {
 	}
 }
 
-void double_array::gen_down(int n) {
-	int i = 0;
-	double j = 0.1 + 0.2 * n;
-	for (i=0;i<n;i++) {
-		arr[i] = j;
-		j -= 0.2;
+void double_array::gen_down(double min_val, double max_val, double step) {
+	double val = max_val;
+	for (int i=0;i<size;i++) {
+		if (val > min_val) {
+			arr[i] = val;
+			val -= step;
+		}
+		else {
+			arr[i] = min_val;
+		}	
 	}
 }
 
-void double_array::gen_up(int n) {
-	int i = 0;
-	double j = 0.1;
-	for (i=0;i<n;i++) {
-		arr[i] = j;
-		j += 0.2;
+void double_array::gen_up(double min_val, double max_val, double step) {
+	double val = min_val;
+	for (int i=0;i<size;i++) {
+		if (val < max_val) {
+			arr[i] = val;
+			val += step;
+		}
+		else {
+			arr[i] = max_val;
+		}	
 	}
 }
 
-void double_array::gen_rand() {
-	for (int i=0;i<size;i++)
-		arr[i] = rand() * (1.0 / (i+1));
+void double_array::gen_rand(double min_val, double max_val) {
+	int dif = max_val - min_val;
+	double temp = 0;
+	if (dif > 0) {
+		for (int i=0;i<size;i++) {
+			arr[i] = (double)(rand() % dif) + min_val;
+			
+			temp = rand() % 500 + 500; // 0.5 - 0.999
+			while (temp > 1) {
+				temp /=10;
+			}
+			arr[i] *= temp;
+			if (arr[i] < min_val) arr[i] = min_val;
+		}
+	}
+	else if (dif == 0) {
+		int count = 0;
+		while (min_val < 1) {
+			min_val *= 10;
+			max_val *= 10;
+			count++;
+		}
+		for (int i=0;i<size;i++)
+			arr[i] = (double)(rand() % ((int)max_val - (int)min_val + 1) + (int)min_val) / pow(10, count);
+
+	}
 }
 
 void double_array::output() {
@@ -189,6 +220,7 @@ int main(){
 	scanf("%d", &n);
 	double_array gen_1(n);
 	int_array gen_2(n);
+	/*int test
 	gen_2.gen_down(0, 1000, 3);
 	gen_2.output();
 	gen_2.gen_up(0, 1000, 3);
@@ -207,6 +239,14 @@ int main(){
 
 	gen_2.kvazi_gen(0, 1000);
 	gen_2.output();
+	*/
+	gen_1.gen_up(0.123, 10.23, 2.7);
+	gen_1.output();
+	gen_1.gen_down(0.123, 10.23, 2.7);
+	gen_1.output();
+	gen_1.gen_rand(0.123, 10.23);
+	gen_1.output();
+	// Добавить проверку на ЧУМ - если ЧУМ выводить по интервалам, а не по сайзам
 	return 0;
 }
 /*
