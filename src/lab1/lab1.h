@@ -13,11 +13,12 @@ class double_array {
 		void gen_up(double min_val, double max_val, double step);
 		void gen_down(double min_val, double max_val, double step);
 
+		void step_gen(double min_val, double max_val);
+		void sin_gen(double min_val, double max_val);
 		// не реализовано 
 		// void sawtooth_gen(double min_val, double max_val);
-		// void step_gen(double min_val, double max_val);
 		// void kvazi_gen(double min_val, double max_val);
-
+		// void sin_gen(double min_val, double max_val);
 		double_array(int n) {
 			arr = new double[n];
 			size = n;

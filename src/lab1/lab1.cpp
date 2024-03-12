@@ -171,11 +171,119 @@ void double_array::gen_rand(double min_val, double max_val) {
 			max_val *= 10;
 			count++;
 		}
-		for (int i=0;i<size;i++)
+		for (int i=0;i<size;i++) {
 			arr[i] = (double)(rand() % ((int)max_val - (int)min_val + 1) + (int)min_val) / pow(10, count);
+			temp = rand() % 1000 + 9000;
+			while (temp > 1) {
+				temp /=10;
+			}
+			arr[i] *= temp;
+			if (arr[i] < min_val/pow(10, count)) arr[i] = min_val/pow(10, count);
+			if (arr[i] > max_val/pow(10, count)) arr[i] = max_val/pow(10, count);
+		}
+			
 
 	}
 }
+
+
+void double_array::sin_gen(double min_val, double max_val) {
+	int mid, i = 0, n = size, j = 0;
+	double val = max_val, step=(max_val-min_val)/interval;
+	mid = interval / 2;
+	while (n - interval >= 0) {
+		for (i=0+j;i<mid+j;i++) {
+			arr[i] = val;
+			if (val-step >= min_val)
+				val -= step;
+			else 
+				val = min_val;
+		}
+		for (i=mid+j;i<interval+j;i++) {
+			arr[i] = val;
+			if (val+step <= max_val)
+				val += step;
+			else 
+				val = max_val;
+		}
+		n -= interval;
+		j += interval;
+		val = max_val;
+	}
+}
+
+void double_array::step_gen(double min_val, double max_val) {
+	int j=0, n=size, dif = 0;
+	double range = max_val - min_val, step = range / (n / interval) / 2, mn=step+min_val, mx = 2*step+min_val, temp = 0;
+	
+	while (n - interval >= 0) {
+		dif = (int)mx - (int)mn;
+		// printf("%lg, %lg, %d\n", mn, mx, dif);			
+		if (dif > 0) {
+			for (int i=0+j;i<interval+j;i++) {
+				arr[i] = (double)(rand() % (dif+1)) + mn;
+				
+				temp = rand() % 1000 + 9000; // 0.9 - 0.999
+				while (temp > 1) {
+					temp /=10;
+				}
+				arr[i] *= temp;
+				if (arr[i] < mn) arr[i] = mn;
+				if (arr[i] > mx) arr[i] = mx;
+			}
+		}
+		else if (dif == 0) {
+			int count = 0;
+			while (mn < 1) {
+				mn *= 10;
+				mx *= 10;
+				count++;
+			}
+			for (int i=0+j;i<interval+j;i++) {
+				arr[i] = (double)(rand() % ((int)mx - (int)mn + 1) + (int)mn) / pow(10, count);
+				temp = rand() % 1000 + 9000;
+				while (temp > 1) {
+					temp /=10;
+				}
+				arr[i] *= temp;
+				if (arr[i] < mn/pow(10, count)) arr[i] = mn/pow(10, count);
+				if (arr[i] > mx/pow(10, count)) arr[i] = mx/pow(10, count);
+			}
+			mn /= pow(10, count);
+			mx /= pow(10, count);
+		}
+		n -= interval;
+		j += interval;
+		mn += 2 * step;
+		mx += 2 * step;
+	}
+}
+/*
+	int dif = max_val - min_val;
+	double temp = 0;
+if (dif > 0) {
+		for (int i=0;i<size;i++) {
+			arr[i] = (double)(rand() % dif) + min_val;
+			
+			temp = rand() % 500 + 500; // 0.5 - 0.999
+			while (temp > 1) {
+				temp /=10;
+			}
+			arr[i] *= temp;
+			if (arr[i] < min_val) arr[i] = min_val;
+		}
+	}
+	else if (dif == 0) {
+		int count = 0;
+		while (min_val < 1) {
+			min_val *= 10;
+			max_val *= 10;
+			count++;
+		}
+		for (int i=0;i<size;i++)
+			arr[i] = (double)(rand() % ((int)max_val - (int)min_val + 1) + (int)min_val) / pow(10, count);
+}
+*/
 
 void double_array::output() {
 	for (int i=0;i<size;i++) 
@@ -244,7 +352,12 @@ int main(){
 	gen_1.output();
 	gen_1.gen_down(0.123, 10.23, 2.7);
 	gen_1.output();
-	gen_1.gen_rand(0.123, 10.23);
+	gen_1.gen_rand(0.123, 0.93);
+	gen_1.output();
+
+	gen_1.sin_gen(0.123, 0.93);
+	gen_1.output();
+	gen_1.step_gen(0.123, 0.93);
 	gen_1.output();
 	// Добавить проверку на ЧУМ - если ЧУМ выводить по интервалам, а не по сайзам
 	return 0;
