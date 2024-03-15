@@ -68,16 +68,16 @@ void int_array::sin_gen(int min_val, int max_val) {
 
 //a1 < a2 > a3 < … > an-1 < an
 void int_array::sawtooth_gen(int min_val, int max_val) {
-	int i=0, j=0, mn = min_val, mx = max_val, l=0, n=size;
+	int i=0, j=0, mn = min_val, mx = max_val, l=0, n=size, step=(max_val-min_val)/interval;
 	while (n - interval >= 0) {
 		for (i=0+j;i<interval+j;i++) {
 			if (i % 2 == l) {
 				arr[i] = mn;
-				mn++;
+				mn+=step;
 			}
 			else {
 				arr[i] = mx;
-				mx--;
+				mx-=step;
 			}
 		}
 		l = (l+1)%2;
@@ -258,32 +258,52 @@ void double_array::step_gen(double min_val, double max_val) {
 		mx += 2 * step;
 	}
 }
-/*
-	int dif = max_val - min_val;
-	double temp = 0;
-if (dif > 0) {
-		for (int i=0;i<size;i++) {
-			arr[i] = (double)(rand() % dif) + min_val;
-			
-			temp = rand() % 500 + 500; // 0.5 - 0.999
-			while (temp > 1) {
-				temp /=10;
+
+
+void double_array::sawtooth_gen(double min_val, double max_val) {
+	int i=0, j=0, l=0, n=size;
+	double mn = min_val, mx = max_val, step=(max_val-min_val)/interval;
+	while (n - interval >= 0) {
+		for (i=0+j;i<interval+j;i++) {
+			if (i % 2 == l) {
+				arr[i] = mn;
+				mn+=step;
 			}
-			arr[i] *= temp;
-			if (arr[i] < min_val) arr[i] = min_val;
+			else {
+				arr[i] = mx;
+				mx-=step;
+			}
 		}
+		l = (l+1)%2;
+		n -= interval;
+		j += interval;
+		mx = max_val;
+		mn = min_val;
 	}
-	else if (dif == 0) {
-		int count = 0;
-		while (min_val < 1) {
-			min_val *= 10;
-			max_val *= 10;
-			count++;
-		}
-		for (int i=0;i<size;i++)
-			arr[i] = (double)(rand() % ((int)max_val - (int)min_val + 1) + (int)min_val) / pow(10, count);
 }
-*/
+
+void double_array::kvazi_gen(double min_val, double max_val) {
+	int i=0, j=0, n=size;
+	double val = min_val, step=(max_val-min_val)/interval, temp=0;
+	while (n - interval >= 0) {
+		for (i=0+j;i<interval+j;i++) {
+			arr[i] = val;
+			
+			if (val+step <= max_val)
+				val += step;
+			else 
+				val = max_val;
+		}
+		// 3 инверсии
+		i--;
+		temp = arr[i-2];
+		arr[i-2] = arr[i];
+		arr[i] = temp;
+		n -= interval;
+		j += interval;
+		val = min_val;
+	}
+}
 
 void double_array::output() {
 	for (int i=0;i<size;i++) 
@@ -291,35 +311,56 @@ void double_array::output() {
 	printf("\n");
 }
 
-/*
-void start_gen(double_array * gen_1, int_array * gen_2, int n) {
-	printf("---------------------\nstart double generation\nup_sorted:\n");
-	up_sort_gen::gen_double(gen_1->double_arr, n);
-	gen_1->output();
-	printf("down_sorted:\n");
-	down_sort_gen::gen_double(gen_1->double_arr, n);
-	gen_1->output();
-	printf("random:\n");
-	gen_1->gen_rand();
-	gen_1->output();
-	printf("---------------------\nstart int generation\nup_sorted:\n");
-	up_sort_gen::gen_int(gen_2->int_arr, n);
-	gen_2->output(	start_gen(&gen_1, &gen_2, n);
-);
-	printf("down_sorted:\n");
-	down_sort_gen::gen_int(gen_2->int_arr, n);
+
+void start_gen(double_array * gen_1, int_array * gen_2, int min_val_int, int max_val_int,
+							double min_val_double, double max_val_double, int int_step, double double_step) {
+	cout << "Int generation start\n\n";
+	cout << "down generation\n";
+	gen_2->gen_down(min_val_int, max_val_int, int_step);
 	gen_2->output();
-	printf("random:\n");
-	gen_2->gen_rand();
+	cout << "up generation\n";
+	gen_2->gen_up(min_val_int, max_val_int, int_step);
 	gen_2->output();
-	printf("sawtooth\n");
-	sawtooth_gen(gen_2->int_arr, n);
+	cout << "random generation\n";
+	gen_2->gen_rand(min_val_int, max_val_int);
 	gen_2->output();
-	printf("sin_gen\n");
-	sin_gen(gen_2->int_arr, n);
-	gen_2->output();	
+	cout << "sawtooth generation\n";
+	gen_2->sawtooth_gen(min_val_int, max_val_int);
+	gen_2->output();
+	cout << "sin generation\n";
+	gen_2->sin_gen(min_val_int, max_val_int);
+	gen_2->output();
+	cout << "step generation\n";
+	gen_2->step_gen(min_val_int, max_val_int);
+	gen_2->output();
+	cout << "kvazi generation\n";
+	gen_2->kvazi_gen(min_val_int, max_val_int);
+	gen_2->output();
+	
+	cout << "Double generation start\n\n";
+	cout << "down generation\n";
+	gen_1->gen_down(min_val_double, max_val_double, double_step);
+	gen_1->output();
+	cout << "up generation\n";
+	gen_1->gen_up(min_val_double, max_val_double, double_step);
+	gen_1->output();
+	cout << "random generation\n";
+	gen_1->gen_rand(min_val_double, max_val_double);
+	gen_1->output();
+	cout << "sawtooth generation\n";
+	gen_1->sawtooth_gen(min_val_double, max_val_double);
+	gen_1->output();
+	cout << "sin generation\n";
+	gen_1->sin_gen(min_val_double, max_val_double);
+	gen_1->output();
+	cout << "step generation\n";
+	gen_1->step_gen(min_val_double, max_val_double);
+	gen_1->output();
+	cout << "kvazi generation\n";
+	gen_1->kvazi_gen(min_val_double, max_val_double);
+	gen_1->output();
 }
-*/
+
 
 int main(){
 	srand(time(NULL));
@@ -328,38 +369,8 @@ int main(){
 	scanf("%d", &n);
 	double_array gen_1(n);
 	int_array gen_2(n);
-	/*int test
-	gen_2.gen_down(0, 1000, 3);
-	gen_2.output();
-	gen_2.gen_up(0, 1000, 3);
-	gen_2.output();
-	gen_2.gen_rand(0, 1000);
-	gen_2.output();
-	printf("\n\n");
-	gen_2.sawtooth_gen(0, 1000);
-	gen_2.output();
+	start_gen(&gen_1, &gen_2, 0, 1000, 0.123, 9.23, 90, 0.21);
 
-	gen_2.sin_gen(0, 1000);
-	gen_2.output();
-
-	gen_2.step_gen(0, 1000);
-	gen_2.output();
-
-	gen_2.kvazi_gen(0, 1000);
-	gen_2.output();
-	*/
-	gen_1.gen_up(0.123, 10.23, 2.7);
-	gen_1.output();
-	gen_1.gen_down(0.123, 10.23, 2.7);
-	gen_1.output();
-	gen_1.gen_rand(0.123, 0.93);
-	gen_1.output();
-
-	gen_1.sin_gen(0.123, 0.93);
-	gen_1.output();
-	gen_1.step_gen(0.123, 0.93);
-	gen_1.output();
-	// Добавить проверку на ЧУМ - если ЧУМ выводить по интервалам, а не по сайзам
 	return 0;
 }
 /*

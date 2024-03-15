@@ -5,20 +5,17 @@ class double_array {
 	private:
 		int size;
 		double * arr;
-		// enum last_gen = {pseudo_gen=1, sorted_gen=2};
 	public:
 		void output();
 		void gen_rand(double min_val, double max_val);
-		// max_val no control
 		void gen_up(double min_val, double max_val, double step);
 		void gen_down(double min_val, double max_val, double step);
 
 		void step_gen(double min_val, double max_val);
 		void sin_gen(double min_val, double max_val);
-		// не реализовано 
-		// void sawtooth_gen(double min_val, double max_val);
-		// void kvazi_gen(double min_val, double max_val);
-		// void sin_gen(double min_val, double max_val);
+		void sawtooth_gen(double min_val, double max_val);
+		// ЧТО ЗНАЧИТ ОГРАНИЧЕНОЕ ЧИСЛО ИНВЕРСИЙ
+		void kvazi_gen(double min_val, double max_val);
 		double_array(int n) {
 			arr = new double[n];
 			size = n;
@@ -35,12 +32,9 @@ class int_array {
 	public:
 		void output();
 		void gen_rand(int min_val, int max_val);
-		// max_val no control
 		void gen_up(int min_val, int max_val, int step);
 		void gen_down(int min_val, int max_val, int step);
-		// interval = 10
 		void sin_gen(int min_val, int max_val);
-
 		//a1 < a2 > a3 < … > an-1 < an
 		void sawtooth_gen(int min_val, int max_val);
 		void step_gen(int min_val, int max_val);
