@@ -1,10 +1,11 @@
 #define interval 10
 using namespace std;
-
+void swap_arr(void * arr, int i, int j, int doub_or_int);
 class double_array {
 	private:
 		int size;
 		double * arr;
+		void inversion_gen(int start);
 	public:
 		void output();
 		void gen_rand(double min_val, double max_val);
@@ -14,7 +15,6 @@ class double_array {
 		void step_gen(double min_val, double max_val);
 		void sin_gen(double min_val, double max_val);
 		void sawtooth_gen(double min_val, double max_val);
-		// ЧТО ЗНАЧИТ ОГРАНИЧЕНОЕ ЧИСЛО ИНВЕРСИЙ
 		void kvazi_gen(double min_val, double max_val);
 		double_array(int n) {
 			arr = new double[n];
