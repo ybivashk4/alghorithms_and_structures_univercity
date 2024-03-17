@@ -20,15 +20,13 @@ class double_array {
 			arr = new double[n];
 			size = n;
 		}
-		~double_array() {
-			delete arr;
-		}
 };
 
 class int_array {
 	private:
 		int * arr;
 		int size;
+		void inversion_gen(int start);
 	public:
 		void output();
 		void gen_rand(int min_val, int max_val);
@@ -43,8 +41,5 @@ class int_array {
 			arr = new int[n];
 			for (int i=0;i<n;i++) arr[i] = 0;
 			size = n;
-		}
-		~int_array() {
-			delete arr;
 		}
 };

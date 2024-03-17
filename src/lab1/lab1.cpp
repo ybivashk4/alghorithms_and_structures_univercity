@@ -102,25 +102,166 @@ void int_array::step_gen(int min_val, int max_val) {
 }
 
 void int_array::kvazi_gen(int min_val, int max_val) {
-	int i=0, j=0, n=size, val = min_val, step=(max_val-min_val)/interval, temp=0;
+	int i=0, j=0, n=size, val = min_val;
+	int  step = (max_val - min_val) / (n / interval) / 2, mn=step+min_val, mx = 2*step+min_val;
 	while (n - interval >= 0) {
 		for (i=0+j;i<interval+j;i++) {
 			arr[i] = val;
 			
-			if (val+step <= max_val)
-				val += step;
+			if (val+step <= mx)
+				val += (step/interval);
 			else 
-				val = max_val;
+				val = mx;
 		}
-		// 3 инверсии
 		i--;
-		temp = arr[i-2];
-		arr[i-2] = arr[i];
-		arr[i] = temp;
+		inversion_gen(j);
 		n -= interval;
 		j += interval;
-		val = min_val;
+		mn += 2 * step;
+		mx += 2 * step;
 	}
+}
+
+void int_array::inversion_gen(int start) {
+	int inversions = 0, swapped, temp;
+	int mx_index, mn_index;
+	inversions = rand() % (interval / 2 + 1);
+	switch (inversions) {
+		case 1:
+			mn_index = 0;
+			mx_index = interval-1;
+			swapped = rand() % (mx_index+1) + mn_index;
+			// свап влево или вправо
+			if ((rand() % 2 && swapped != mn_index) || swapped == mx_index) {
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			}
+			else {
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+			}
+			break;
+		case 2:
+			mn_index = 0;
+			mx_index = (interval/2)-1;
+			swapped = rand() % (mx_index+1) + mn_index;
+			if ((rand() % 2 && swapped != mn_index) || swapped == mx_index) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+
+			mn_index = interval/2;
+			mx_index = interval/2;
+			swapped = rand() % (mx_index) + mn_index;
+			if ((rand() % 2 && swapped != mn_index) || swapped == mn_index+mx_index-1) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+
+			break;
+		case 3:
+			mn_index = 0;
+			mx_index = interval/3;
+			swapped = rand() % mx_index;
+			if ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+			mn_index = interval/3;
+			swapped = rand() % (mx_index) + mn_index;
+			if ((rand() % 2 && swapped != mn_index) || swapped == mx_index + mn_index - 1) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+			mn_index = interval/3 * 2;
+			swapped = rand() % (mx_index) + mn_index;
+			if ((rand() % 2 && swapped != mn_index) || swapped == mx_index + mn_index - 1) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+			break;
+		case 4:
+			temp = rand() % 3; // в каком месте встваим на 2 позиции
+
+			mn_index = 0;
+			mx_index = interval/3;
+			swapped = rand() % mx_index;
+			if (temp != 0 && ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1)) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else if (temp == 0) {
+				// mx elem 
+				swap_arr(arr, mn_index, mn_index+mx_index-1, 1);
+				swap_arr(arr, mn_index+1, mn_index+mx_index-1, 1);
+			}
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+
+			mn_index = interval/3 * 2;
+			swapped = rand() % (mx_index) + mn_index;
+			if (temp != 0 && ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1)) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else if (temp == 1) {
+				// mx elem 
+				swap_arr(arr, mn_index, mn_index+mx_index-1, 1);
+				swap_arr(arr, mn_index+1, mn_index+mx_index-1, 1);
+			}
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+
+			mn_index = 0;
+			mx_index = interval/3;
+			swapped = rand() % mx_index;
+			if (temp != 0 && ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1)) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else if (temp == 2) {
+				// mx elem 
+				swap_arr(arr, mn_index, mn_index+mx_index-1, 1);
+				swap_arr(arr, mn_index+1, mn_index+mx_index-1, 1);
+			}
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+			break;
+		case 5:
+			temp = rand() % 3; // в каком месте не встваим на 2 позиции
+
+			mn_index = 0;
+			mx_index = interval/3;
+			swapped = rand() % mx_index;
+			if (temp != 0 && ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1)) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else if (temp != 0) {
+				// mx elem 
+				swap_arr(arr, mn_index, mn_index+mx_index-1, 1);
+				swap_arr(arr, mn_index+1, mn_index+mx_index-1, 1);
+			}
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+
+			mn_index = interval/3 * 2;
+			swapped = rand() % (mx_index) + mn_index;
+			if (temp != 0 && ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1)) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else if (temp != 1) {
+				// mx elem 
+				swap_arr(arr, mn_index, mn_index+mx_index-1, 1);
+				swap_arr(arr, mn_index+1, mn_index+mx_index-1, 1);
+			}
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+
+			mn_index = 0;
+			mx_index = interval/3;
+			swapped = rand() % mx_index;
+			if (temp != 0 && ((rand() % 2 && swapped != mn_index) || swapped == mx_index - 1)) 
+				swap_arr(arr, start+swapped, start+swapped - 1, 1);
+			else if (temp != 2) {
+				// mx elem 
+				swap_arr(arr, mn_index, mn_index+mx_index-1, 1);
+				swap_arr(arr, mn_index+1, mn_index+mx_index-1, 1);
+			}
+			else 
+				swap_arr(arr, start+swapped, start+swapped + 1, 1);
+			break;
+	}
+
 }
 
 void double_array::gen_down(double min_val, double max_val, double step) {
@@ -284,36 +425,34 @@ void double_array::sawtooth_gen(double min_val, double max_val) {
 
 void double_array::kvazi_gen(double min_val, double max_val) {
 	int i=0, j=0, n=size;
-	double val = min_val, step=(max_val-min_val)/interval;
+	double step = (max_val - min_val) / (n / interval) / 2, mn=step+min_val, mx = 2*step+min_val, val = min_val;
 	while (n - interval >= 0) {
 		for (i=0+j;i<interval+j;i++) {
 			arr[i] = val;
 			
-			if (val+step <= max_val)
-				val += step;
+			if (val+step <= mx)
+				val += (step/interval);
 			else 
-				val = max_val;
+				val = mx;
 		}
-		inversion_gen(j);
 		i--;
+		inversion_gen(j);
 		n -= interval;
 		j += interval;
-		val = min_val;
+		mn += 2 * step;
+		mx += 2 * step;
 	}
 }
 
 void double_array::inversion_gen(int start) {
 	int inversions = 0, swapped, temp;
 	int mx_index, mn_index;
-	//inversions = rand() % (interval / 2 + 1);
-	// 1 работает, остальное не смотерл 
-	inversions = 1;
+	inversions = rand() % (interval / 2 + 1);
 	switch (inversions) {
 		case 1:
 			mn_index = 0;
 			mx_index = interval-1;
 			swapped = rand() % (mx_index+1) + mn_index;
-			cout << swapped << endl;
 			// свап влево или вправо
 			if ((rand() % 2 && swapped != mn_index) || swapped == mx_index) {
 				swap_arr(arr, start+swapped, start+swapped - 1, 0);
@@ -447,6 +586,8 @@ void double_array::inversion_gen(int start) {
 
 }
 
+
+
 // 0-2 2-0 элемента переставляем на 1 позицию (свап)
 // 3 выбираем 3 случайных числа 1-8 и вставляем
 // 4 - выбираем 2 элемента 1-2+7-8 и вставляем, дальше 1 элемент 3-6 и вставляем либо вправо либо влево на 2
@@ -455,18 +596,20 @@ void double_array::inversion_gen(int start) {
 // нужно переставить 3 элемента
 
 // 0 - double*, 1 - int*
-void swap_arr(void * arr, int i, int j, int doub_or_int) {
+void swap_arr(void * arr_, int i, int j, int doub_or_int) {
 	int temp1 = 0;
 	double temp2;
 	if (doub_or_int) {
-		temp1 = ((int *)arr)[i];
-		((int *)arr)[i] = ((int *)arr)[j];
-		((int *)arr)[j] = temp1;
+		int * arr = (int*)arr_;
+		temp1 = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp1;
 	}
 	else {
-		temp2 = ((double *)arr)[i];
-		((double *)arr)[i] = ((double *)arr)[j];
-		((double *)arr)[j] = temp2;
+		double * arr = (double*)arr_;
+		temp2 = arr[i];
+		arr[i] = arr[j];
+		arr[j] = temp2;
 	}
 
 }
@@ -486,69 +629,69 @@ void start_gen(double_array * gen_1, int_array * gen_2, int min_val_int, int max
 	gen_2->gen_down(min_val_int, max_val_int, int_step);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	cout << "up generation\n";
 	gen_2->gen_up(min_val_int, max_val_int, int_step);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	cout << "random generation\n";
 	gen_2->gen_rand(min_val_int, max_val_int);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	cout << "sawtooth generation\n";
 	gen_2->sawtooth_gen(min_val_int, max_val_int);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	cout << "sin generation\n";
 	gen_2->sin_gen(min_val_int, max_val_int);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	cout << "step generation\n";
 	gen_2->step_gen(min_val_int, max_val_int);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	cout << "kvazi generation\n";
 	gen_2->kvazi_gen(min_val_int, max_val_int);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_2->output();
+	gen_2->output();
 	
 	cout << "Double generation start\n\n";
 	cout << "down generation\n";
 	gen_1->gen_down(min_val_double, max_val_double, double_step);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_1->output();
+	gen_1->output();
 	cout << "up generation\n";
 	gen_1->gen_up(min_val_double, max_val_double, double_step);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_1->output();
+	gen_1->output();
 	cout << "random generation\n";
 	gen_1->gen_rand(min_val_double, max_val_double);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_1->output();
+	gen_1->output();
 	cout << "sawtooth generation\n";
 	gen_1->sawtooth_gen(min_val_double, max_val_double);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_1->output();
+	gen_1->output();
 	cout << "sin generation\n";// 1 2 3 4 5 6 7 8 9 10
 
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_1->output();
+	gen_1->output();
 	cout << "step generation\n";
 	gen_1->step_gen(min_val_double, max_val_double);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
 	start_time = clock();
-//	gen_1->output();
+	gen_1->output();
 	cout << "kvazi generation\n";
 	gen_1->kvazi_gen(min_val_double, max_val_double);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec" << endl;
