@@ -68,23 +68,18 @@ void int_array::sin_gen(int min_val, int max_val) {
 
 //a1 < a2 > a3 < … > an-1 < an
 void int_array::sawtooth_gen(int min_val, int max_val) {
-	int i=0, j=0, mn = min_val, mx = max_val, l=0, n=size, step=(max_val-min_val)/interval;
+	int i=0, j=0, val=min_val, n=size, step=(max_val-min_val)/interval;
 	while (n - interval >= 0) {
 		for (i=0+j;i<interval+j;i++) {
-			if (i % 2 == l) {
-				arr[i] = mn;
-				mn+=step;
-			}
-			else {
-				arr[i] = mx;
-				mx-=step;
-			}
+			arr[i] = val;
+			if (val+step <= max_val)
+				val += step;
+			else 
+				val = max_val;
 		}
-		l = (l+1)%2;
+		val = min_val;
 		n -= interval;
 		j += interval;
-		mx = max_val;
-		mn = min_val;
 	}
 }
 
@@ -402,24 +397,19 @@ void double_array::step_gen(double min_val, double max_val) {
 
 
 void double_array::sawtooth_gen(double min_val, double max_val) {
-	int i=0, j=0, l=0, n=size;
-	double mn = min_val, mx = max_val, step=(max_val-min_val)/interval;
+	int i=0, j=0, n=size;
+	double val = min_val, step=(max_val-min_val)/interval;
 	while (n - interval >= 0) {
 		for (i=0+j;i<interval+j;i++) {
-			if (i % 2 == l) {
-				arr[i] = mn;
-				mn+=step;
-			}
-			else {
-				arr[i] = mx;
-				mx-=step;
-			}
+			arr[i] = val;
+			if (val+step <= max_val)
+				val += step;
+			else 
+				val = max_val;
 		}
-		l = (l+1)%2;
+		val = min_val;
 		n -= interval;
 		j += interval;
-		mx = max_val;
-		mn = min_val;
 	}
 }
 
@@ -625,6 +615,7 @@ void start_gen(double_array * gen_1, int_array * gen_2, int min_val_int, int max
 							double min_val_double, double max_val_double, int int_step, double double_step) {
 	cout << "Int generation start\n\n";
 	cout << "down generation\n";
+	cout << "\n\n" << int_step <<"\n\n\n";
 	clock_t start_time = clock();
 	gen_2->gen_down(min_val_int, max_val_int, int_step);
 	cout << (double)(clock()-start_time) / CLOCKS_PER_SEC << " sec"  << endl;
@@ -707,7 +698,7 @@ int main(){
 	scanf("%d", &n);
 	double_array gen_1(n);
 	int_array gen_2(n);
-	start_gen(&gen_1, &gen_2, 0, 1000, 0.123, 9.23, 90, 0.21);
+	start_gen(&gen_1, &gen_2, 0, 1000, 0.123, 9.23, 15, 0.21);
 
 	return 0;
 }
