@@ -20,6 +20,9 @@ class double_array {
 			arr = new double[n];
 			size = n;
 		}
+		~double_array() {
+			delete arr;
+		}
 };
 
 class int_array {
@@ -41,5 +44,8 @@ class int_array {
 			arr = new int[n];
 			for (int i=0;i<n;i++) arr[i] = 0;
 			size = n;
+		}
+		~int_array() {
+			delete arr;
 		}
 };
