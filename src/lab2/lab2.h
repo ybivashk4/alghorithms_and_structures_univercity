@@ -6,7 +6,8 @@ struct Complexity {
     double time;
     long long int operations;
     void out (int size) {
-        std::cout << "array size is " << size << ",time is " << ((double)time / CLOCKS_PER_SEC) * 1000 << " msec, " << "operations is " << operations << std::endl;
+        //std::cout << "array size is " << size << ",time is " << ((double)time / CLOCKS_PER_SEC) * 1000 << " msec, " << "operations is " << operations << std::endl;
+        std::cout << size << " " << ((double)time / CLOCKS_PER_SEC) * 1000 << " " << operations << std::endl;
     }
 };
 

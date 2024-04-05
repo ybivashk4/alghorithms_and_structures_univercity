@@ -10,75 +10,144 @@ using namespace std;
 // add qsort
 #ifdef lab2
 int main () {
-    long int arr_size = 2e4;
+    long int arr_sizes[5] = {1*1000, 5 * 1000, 10 * 1000, 15 * 1000, 20 * 1000};
+    long int arr_size = 5e4;
     int_array arr(arr_size);
     Complexity res;
 
     /* bubble sort with flag */
-    serviece_out(1, 1);
-    arr.gen_down(1, arr_size, 1);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = flag_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    serviece_out(1, 2);
-    arr.gen_up(1, arr_size, 1);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = flag_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    serviece_out(1, 3);
-    arr.gen_rand(1, arr_size);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = flag_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    serviece_out(1, 4);
-    arr.sawtooth_gen(1, arr_size);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = flag_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    /* bubble sort last index */
-
-    serviece_out(2, 1);
-    arr.gen_down(1, arr_size, 1);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = last_index_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-
-    serviece_out(2, 2);
-    arr.gen_up(1, arr_size, 1);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = last_index_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    serviece_out(2, 3);
-    arr.gen_rand(1, arr_size);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = last_index_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    serviece_out(2, 4);
-    arr.sawtooth_gen(1, arr_size);
-    cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res = last_index_bubble_sort(arr.get_arr(), arr.get_size());
-    cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
-    res.out(arr_size);
-
-    /* heap sort */
+    // serviece_out(1, 1);
+    for (auto &a : arr_sizes) {
+        arr.gen_down(1, a, 1);
+        // cout << "arr before sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
+        res = flag_bubble_sort(arr.get_arr(), a);
+        // cout << "arr after sort " << is_sorted(arr.get_arr(), arr.get_size()) << endl;
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.gen_rand(1, a);
+        res = flag_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.gen_up(1, a, 1);
+        res = flag_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.sawtooth_gen(1, a);
+        res = flag_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.gen_down(1, a, 1);
+        res = last_index_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.gen_rand(1, a);
+        res = last_index_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.gen_up(1, a, 1);
+        res = last_index_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr.sawtooth_gen(1, a);
+        res = last_index_bubble_sort(arr.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
 
     arr_size = 5e6;
     int_array arr2(arr_size);
-
+    arr_sizes[0] = 1 * 100000;
+    arr_sizes[1] = 5 * 100000;
+    arr_sizes[2] = 10 * 100000;
+    arr_sizes[3] = 20 * 100000;
+    arr_sizes[4] = 30 * 100000;
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_down(1, a, 1);
+        res = heap_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_rand(1, a);
+        res = heap_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_up(1, a, 1);
+        res = heap_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.sawtooth_gen(1, a);
+        res = heap_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_down(1, a, 1);
+        res = msd_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_rand(1, a);
+        res = msd_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_up(1, a, 1);
+        res = msd_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.sawtooth_gen(1, a);
+        res = msd_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_down(1, a, 1);
+        res = std_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_rand(1, a);
+        res = std_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.gen_up(1, a, 1);
+        res = std_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    cout << endl;
+    for (auto &a : arr_sizes) {
+        arr2.sawtooth_gen(1, a);
+        res = std_sort(arr2.get_arr(), a);
+        res.out(a);
+    }
+    exit(0);
     serviece_out(3, 1);
     arr2.gen_down(1, arr_size, 1);
     cout << "arr before sort " << is_sorted(arr2.get_arr(), arr2.get_size()) << endl;
@@ -191,7 +260,6 @@ Complexity flag_bubble_sort(T arr, int size) {
     bool flag = true;
     int buf2;
     for (int i=0;i<size;i++) {
-        res.operations++;
         if (!flag) break;
         flag = false;
         for (int j=0;j<size-1;j++) {
@@ -318,7 +386,7 @@ Complexity std_sort(T arr, int size) {
     return res;
 }
 
-void serviece_out(int set, int sort) {
+void serviece_out(int sort, int set) {
     switch(set) {
         case 1:
             cout << "down gen " << endl;
