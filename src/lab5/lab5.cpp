@@ -8,9 +8,9 @@ using namespace std;
 
 int main () {
     srand(time(NULL));
-    setlocale(LC_ALL, "RU");
+    /*
     // ключи - 10 50 100 150 200
-    int sizes[5] = {1000, 5000, 10000, 20000, 30000};
+    int sizes[5] = {1000, 5000, 10000, 15000, 20000};
     int height = -2;
     for (auto &size : sizes) {
         IntTree tree = IntTree::rand_tree_gen(size);
@@ -23,28 +23,42 @@ int main () {
         tree.find_height(tree.root, &height);
         cout << size << " " << height << endl;
     }
-
+    */
     
-    // don't work
-     char start = 'а'; // without ё
+    
     CharTree targetTree;
-    for (int i = 0; i < 32; i++) {
-        targetTree.insert(targetTree.root, start+i);
+    char start_low = 'a';
+    char start_up = 'A';
+    
+    for (int i = 0; i < 52; i++) {
+        targetTree.insert(targetTree.root, (i%2 ? start_low+i/2 : start_up + i/2));
     }
-     char _start = 'А'; // without ё
-    for (int i = 0; i < 32; i++) {
-        targetTree.insert(targetTree.root, _start+i);
-    }
+
+    cout << "find nodes with keys z, a, J\n";
+    targetTree.find(targetTree.root, 'z')->out();
+    targetTree.find(targetTree.root, 'a')->out();
+    targetTree.find(targetTree.root, 'J')->out();
+    cout << "\n\n";
+
     targetTree.out();
+    
+    for (int i = 0; i < 52; i++) {
+        targetTree.remove(targetTree.root, (i%2 ? start_low+i/2 : start_up + i/2));
+    }
+
+    targetTree.out();
+    
+
+    //cout << res << endl;
+    
     return 0;
 }
 
 CharNode * CharTree::find(CharNode * node, char key) {
     if (node == NULL)   return NULL;
-    if (node->key == key)   return node;
+    else if (node->key == key)   return node;
     else if (node->key < key)   find(node->right, key);
     else    find(node->left, key);
-    return NULL;
 }
 
 
@@ -55,28 +69,31 @@ char CharTree::remove(CharNode * node, char key) {
     CharNode * l;
     CharNode * r;
     if (removed->left && removed->right) {
+        
         CharNode * min = this->find_min(removed->right);
         if (removed->parent == NULL) {
-            root = min;
-            min->parent = removed->parent;
+            
             min->left = removed->left;
-            removed->left->parent = min;
-            min->right = removed->right;
+            if (min != removed->right) min->right = removed->right;
             removed->right->parent = min;
+            removed->left->parent = min;
+            min->parent = removed->parent;
+            root = min;
         }
         else {
             removed->parent->right = min;
-            min->parent = removed->parent;
             min->left = removed->left;
+            if (min != removed->right) min->right = removed->right;
             removed->left->parent = min;
-            min->right = removed->right;
             removed->right->parent = min;
+            min->parent = removed->parent;
         }
     }
     else if (removed->left) {
         removed->left->parent = removed->parent;
         if (removed->parent) {
-            removed->parent->left = removed->left;
+            if (removed->parent->right == removed) removed->parent->right = removed->left;
+            else removed->parent->left = removed->left;
         }
         else {
             root = removed->left;
@@ -86,15 +103,23 @@ char CharTree::remove(CharNode * node, char key) {
     else if (removed->right){
         removed->right->parent = removed->parent;
         if (removed->parent) {
-            removed->parent->right = removed->right;
+            if (removed->parent->right == removed) removed->parent->right = removed->right;
+            else removed->parent->left = removed->right;
         }
         else {
             root = removed->right;
             root->parent = NULL;
         }
+
     }
-    else if (node == root){
+    else if (removed == root){
         root = NULL;
+    }
+    else if (removed->parent->left == removed){
+        removed->parent->left = NULL;
+    }
+    else if (removed->parent->right == removed) {
+        removed->parent->right = NULL;
     }
     count--;
     delete removed;
@@ -181,7 +206,7 @@ void CharNode::out(){
 // 1 - out all
 void CharTree::dfs(CharNode * a){
 	if (a){
-		// dfs_support(root);
+		dfs_support(root);
 		static int cnt = 0;
 		if (!a->visited){
 			a->out();
@@ -199,7 +224,7 @@ void CharTree::dfs(CharNode * a){
 
 void CharTree::target_func(CharNode * a, int *sheets_vowel){
 	if (a){
-		// dfs_support(root);
+		dfs_support(root);
 		static int cnt = 0;
 		if (!a->visited){
             if (a->left == NULL && a->right == NULL &&  strchr(vowel, a->key)) (*sheets_vowel)++;
@@ -207,9 +232,9 @@ void CharTree::target_func(CharNode * a, int *sheets_vowel){
 			cnt += 1;
 		}
 		if (cnt != this->count && a->left)
-			dfs(a->left);
+			target_func(a->left, sheets_vowel);
 		if(cnt != this->count && a->right)
-			dfs(a->right);
+			target_func(a->right, sheets_vowel);
 
 		dfs_support(root);			
 	}
@@ -479,4 +504,62 @@ IntTree IntTree::sorted_tree_gen(int size) {
         tree.insert(tree.root, key);
     }
     return tree;
+}
+
+// рандомизированныое
+// не тестилось 
+void CharTree::rotate_right(CharNode* p) {
+    CharNode* q = p->left;
+    if (!q) return;
+    p->left = q->right;
+    if (q->right)
+        q->right->parent = p;
+    q->right = p;
+
+    if (p->parent) {
+        if (p == p->parent->left)
+            p->parent->left = q;
+        else
+            p->parent->right = q;
+    }
+    else {
+        root = q;
+    }
+    p->parent = q;
+}
+void CharTree::rotate_left(CharNode* q) {
+    CharNode* p =  q->right;
+    if (!p) return;
+    q->right = p->left;
+    if (p->left)
+        p->left->parent = q;
+    p->left = q;
+
+    if (q->parent) {
+        if (q == q->parent->left)
+            q->parent->left = q;
+        else
+            q->parent->right = q;
+    }
+    else {
+        root = p;
+    }
+    q->parent = p;
+}
+CharNode* CharTree::insert_root(CharNode* p, char k) {
+	if (!p) return new CharNode(k);
+
+    if (p->key > k) {
+        p->left = insert_root(p->left, k);
+        rotate_right(p->right);
+    }
+    else {
+        p->right = insert_root(p->right, k);
+        rotate_left(p);
+    }
+    
+}
+CharNode* CharTree::insert_random(CharNode* p, char k) {
+    if (!p) return new CharNode(k);
+    
 }

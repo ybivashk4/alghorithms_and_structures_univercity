@@ -1,5 +1,5 @@
 #include <iostream>
-#define vowel "ауоиэыяюеёАУОИЭЫЯЮЕЁ"
+#define vowel "aeiouyAEIOUY"
 class CharNode;
 class CharTree;
 class CharNode {
@@ -10,6 +10,7 @@ class CharNode {
         CharNode *parent;
         bool visited;
         int height;
+        int size;
         void out();
         CharNode(char key){
             left = NULL;
@@ -17,6 +18,7 @@ class CharNode {
             visited = 0;
             this->key = key; 
             height = -1;
+            size = 1;
         }
 };
 
@@ -56,6 +58,12 @@ class CharTree {
         void target_func(CharNode * a, int *sheets_vowel);
         CharTree() : root(NULL), count(0) {};
         CharTree(CharNode * rt) : root(rt), count(1) {};
+
+        // рандомизированное
+        void rotate_right(CharNode* p);
+        void rotate_left(CharNode* p);
+        CharNode* insert_root(CharNode* p, char k);
+        CharNode* insert_random(CharNode* p, char k);
 };
 
 class IntTree {
