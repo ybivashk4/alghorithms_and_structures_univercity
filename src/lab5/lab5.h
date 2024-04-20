@@ -10,15 +10,14 @@ class CharNode {
         CharNode *parent;
         bool visited;
         int height;
-        int size;
         void out();
         CharNode(char key){
             left = NULL;
             right = NULL; 
+            parent = NULL;
             visited = 0;
             this->key = key; 
             height = -1;
-            size = 1;
         }
 };
 
@@ -30,13 +29,32 @@ class IntNode{
         IntNode *parent;
         bool visited;
         int height;
+        int size;
         void out();
-        IntNode(char key){
+        int get_size() {
+            int _size = 1;
+            if (left!= NULL)
+                _size += left->size;
+            if (right!= NULL)
+                _size += right->size;
+            return _size;
+        }
+        void fix_size() {
+            size = 1;
+            if (left!= NULL)
+                size += left->size;
+            if (right!= NULL)
+                size += right->size;
+            
+        };
+        IntNode(int key){
             left = NULL;
             right = NULL; 
+            parent = NULL;
             visited = 0;
             this->key = key; 
             height = -1;
+            size = 1;
         }
 };
 
@@ -59,11 +77,7 @@ class CharTree {
         CharTree() : root(NULL), count(0) {};
         CharTree(CharNode * rt) : root(rt), count(1) {};
 
-        // рандомизированное
-        void rotate_right(CharNode* p);
-        void rotate_left(CharNode* p);
-        CharNode* insert_root(CharNode* p, char k);
-        CharNode* insert_random(CharNode* p, char k);
+
 };
 
 class IntTree {
@@ -71,8 +85,13 @@ class IntTree {
         int count;
     public:
         IntNode *root;
+        // bin tree search
         static IntTree rand_tree_gen(int size);
         static IntTree sorted_tree_gen(int size);
+        //random tree 
+        static IntTree rand_rand_tree_gen(int size);
+        static IntTree rand_sorted_tree_gen(int size);
+
         void dfs(IntNode * a);
         void dfs_support(IntNode * a); // NULL visited nodes
         void out();
@@ -80,8 +99,14 @@ class IntTree {
         IntNode * find(IntNode * rt, int key);
         int remove(IntNode*, int key);
         IntNode * find_min(IntNode * node);
-        void find_height(IntNode * rt, int * mx);
+        
         IntTree() : root(NULL), count(0) {};
         IntTree(IntNode * rt) : root(rt), count(1) {};
+        void find_height(IntNode * a, int * mx);
+                // рандомизированное
+        IntNode* rotate_right(IntNode* p);
+        IntNode* rotate_left(IntNode* p);
+        IntNode* insert_root(IntNode* p, int k);
+        IntNode* insert_random(IntNode* p, int k);
 };
 
